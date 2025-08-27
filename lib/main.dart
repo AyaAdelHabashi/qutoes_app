@@ -1,23 +1,33 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qutoes_app/core/theme/dark_theme.dart';
 import 'package:qutoes_app/core/theme/light_theme.dart';
-import 'package:qutoes_app/feature/login/ui/home/ui/home.dart';
+import 'package:qutoes_app/feature/add_qutoes/ui/add_quotes_screen.dart';
+import 'package:qutoes_app/feature/home/controller/main_controller.dart';
+import 'package:qutoes_app/feature/home/ui/widgets/main_nav.dart';
 import 'package:qutoes_app/feature/login/ui/login_screen.dart';
 import 'package:qutoes_app/feature/login/ui/signup.dart';
 import 'package:qutoes_app/feature/splash/ui/splash_screen.dart';
 
-void main()async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
   runApp(
     EasyLocalization(
-      supportedLocales: const [ Locale('ar')],
+      supportedLocales: const [Locale('ar')],
       path: 'assets/localization',
       fallbackLocale: const Locale('ar'),
-      child: const MyApp(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => MainProvider()),
+        ],
+        child: const MyApp(),
+      ),
     ),
-  );}
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,21 +36,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:SplashScreen() ,
+      locale: context.locale,
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
       theme: LightAppTheme.themeData,
       darkTheme: DarkAppTheme.themeData,
       themeMode: ThemeMode.light,
-      locale: context.locale,                 // يثبت اللغة على العربية
-      supportedLocales: context.supportedLocales,
-      localizationsDelegates: context.localizationDelegates,
+      
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
-        '/signup' :(context)=> SignupScreen(),
-        '/home':(context) => Home(),},
+        '/signup': (context) => SignupScreen(),
+        '/AddQuoteScreen':(context) => const AddQuoteScreen(),
+        '/home': (context) => const MainNavigation(
+              child: SizedBox(),
+            ), 
+      },
     );
   }
 }
-
-

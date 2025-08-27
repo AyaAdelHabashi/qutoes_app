@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qutoes_app/core/theme/colors.dart';
-import 'package:qutoes_app/feature/login/ui/home/ui/widgets/card_quotes.dart';
-import 'package:qutoes_app/feature/login/ui/home/ui/widgets/category_tab.dart';
+import 'package:qutoes_app/feature/home/ui/widgets/card_quotes.dart';
+import 'package:qutoes_app/feature/home/ui/widgets/category_tab.dart';
+import 'package:qutoes_app/feature/home/ui/widgets/main_nav.dart';
 
 class Home extends StatelessWidget {
   final List<String> categories = const [
@@ -18,9 +20,28 @@ class Home extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorsApp.background,
+       
+         floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/AddQuoteScreen');
+          },
+          backgroundColor: ColorsApp.primary, 
+          shape: const CircleBorder(),
+          elevation: 4,
+          child: SvgPicture.asset(
+            'assets/images/edit.svg',
+            width: 52,
+            height: 52,
+            // لو بدك تغيّري لون الأيقونة:
+          //  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
         body:Padding(
           padding: const EdgeInsets.only(
             left: 16, right: 16,top:48 ),
+            
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -34,6 +55,14 @@ class Home extends StatelessWidget {
                 "اقرا شارك والهم "  ,
                   style: Theme.of(context).textTheme.bodyLarge?.
                   copyWith(color: ColorsApp.textSecondary),
+                ),
+                SizedBox(height: 24,),
+                SearchBar(
+                  controller: TextEditingController(),
+
+                  onChanged: (value) {
+                  
+                  },
                 ),
                 SizedBox(height: 24,),
                SizedBox(
