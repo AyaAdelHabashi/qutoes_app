@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
       theme: LightAppTheme.themeData,
       darkTheme: DarkAppTheme.themeData,
       themeMode: ThemeMode.light,
-      
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),

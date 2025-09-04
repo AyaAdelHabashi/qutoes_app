@@ -15,34 +15,37 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      //width: double.infinity,
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(imageUrl),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name,
-                 style: TextStyle(
-                  fontWeight: FontWeight.bold, 
-                  fontSize: 16,color: 
-                ColorsApp.textPrimary)),
-                const SizedBox(height: 4),
-                Text(email, 
-                style: TextStyle(fontSize: 14, 
-                  color: ColorsApp.textSecondary)),
-              ],
-            ),
-          ],
+    return SizedBox(
+        width: double.infinity,
+      child: Card(
+        color: ColorsApp.background,
+        elevation:.5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(imageUrl),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                   style: TextStyle(
+                    fontWeight: FontWeight.bold, 
+                    fontSize: 16,color: 
+                  ColorsApp.textPrimary)),
+                  const SizedBox(height: 12),
+                  Text(email, 
+                  style: TextStyle(fontSize: 14, 
+                    color: ColorsApp.textSecondary)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
