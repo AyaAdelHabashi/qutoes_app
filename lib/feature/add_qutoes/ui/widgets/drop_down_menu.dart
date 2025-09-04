@@ -16,9 +16,10 @@ class QuoteTypeDropdown extends StatelessWidget {
       ),
       value: provider.selectedType,
       items: const [
-        DropdownMenuItem(value: "حكمة", child: Text("حكمة")),
-        DropdownMenuItem(value: "مقولة", child: Text("مقولة")),
-        DropdownMenuItem(value: "شعر", child: Text("شعر")),
+        DropdownMenuItem(value: "ادب", child: Text("ادب")),
+        DropdownMenuItem(value: "فلسفة", child: Text("فلسفة")),
+        DropdownMenuItem(value: "تحفيز", child: Text("تحفيز")),
+        DropdownMenuItem(value: "حكم", child: Text("حكم")),
       ],
       onChanged: provider.selectType,
     );

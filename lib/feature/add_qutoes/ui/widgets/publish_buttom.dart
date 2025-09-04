@@ -8,25 +8,34 @@ class PublishButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<AddQuoteController>();
+    final provider = context.watch<AddQuoteController>();
 
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor:ColorsApp.primary,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onPressed: provider.publishQuote,
-        child: const Text(
-          "نشر",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,
-          color: Colors.white),
-        ),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: ColorsApp.primary, // Button color
+        foregroundColor: Colors.white, // Text color
+        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
+      onPressed: provider.isLoading
+          ? null
+          : () async {
+              const fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjhiOTcyZTc2YWQ4Mjk5OWZkZjViMDIzIn0sImlhdCI6MTc1Njk4NDExNSwiZXhwIjoxNzU3MDAyMTE1fQ.-hh_yX8XafTdmxCui-1_uwhpt2LE3Fmw_JNQafQNFEQ"; 
+              await provider.publishQuote(fakeToken);
+
+              if (provider.errorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(provider.errorMessage!)),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("تمت إضافة الاقتباس بنجاح")),
+                );
+                Navigator.pop(context);
+              }
+            },
+      child: provider.isLoading
+          ? const CircularProgressIndicator(color: Colors.white)
+          : const Text("نشر"),
     );
   }
 }

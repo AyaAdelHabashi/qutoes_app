@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:qutoes_app/core/theme/dark_theme.dart';
 import 'package:qutoes_app/core/theme/light_theme.dart';
 import 'package:qutoes_app/feature/add_qutoes/ui/add_quotes_screen.dart';
+import 'package:qutoes_app/feature/auth/controller/auth_provider.dart';
 import 'package:qutoes_app/feature/home/controller/main_controller.dart';
 import 'package:qutoes_app/feature/home/ui/widgets/main_nav.dart';
-import 'package:qutoes_app/feature/login/ui/login_screen.dart';
-import 'package:qutoes_app/feature/login/ui/signup.dart';
+import 'package:qutoes_app/feature/auth/ui/login_screen.dart';
+import 'package:qutoes_app/feature/auth/ui/signup.dart';
 import 'package:qutoes_app/feature/splash/ui/splash_screen.dart';
 
 void main() async {
@@ -22,6 +23,7 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => MainProvider()),
+            ChangeNotifierProvider(create: (_) => AuthProvider())
         ],
         child: const MyApp(),
       ),
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
-        '/login': (context) => const LoginScreen(),
+        '/login': (context) =>  LoginScreen(),
         '/signup': (context) => SignupScreen(),
         '/AddQuoteScreen':(context) => const AddQuoteScreen(),
         '/home': (context) => const MainNavigation(
