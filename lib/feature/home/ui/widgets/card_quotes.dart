@@ -5,7 +5,9 @@ import 'package:qutoes_app/core/theme/colors.dart';
 class CardQuotes extends StatelessWidget {
   final String qutoes;
   final String auther;
-  const CardQuotes({super.key, required this.qutoes, required this.auther});
+  final Widget? delete;
+  final Widget? edit;
+  const CardQuotes({super.key, required this.qutoes, required this.auther, this.delete, this.edit});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class CardQuotes extends StatelessWidget {
             ],
           ),
           Spacer(),
-          Column(children: [SvgPicture.asset('assets/images/heart.svg')]),
+          Column(children: [delete ?? Container(), edit ?? Container()]),
         ],
       ),
     );

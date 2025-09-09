@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qutoes_app/core/di.dart';
 import 'package:qutoes_app/core/theme/colors.dart';
 import 'package:qutoes_app/feature/home/controller/main_controller.dart';
 import 'package:qutoes_app/feature/home/ui/widgets/card_quotes.dart';
@@ -13,8 +14,8 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ChangeNotifierProvider(
-        create: (context) => MainProvider()..getQuotes(),
+      child: ChangeNotifierProvider.value(
+        value: ServiceLocator.getIt<MainProvider>()..getQuotes(),
         child: Scaffold(
           backgroundColor: ColorsApp.background,
 
@@ -25,44 +26,7 @@ class Home extends StatelessWidget {
                 shape: const CircleBorder(),
                 key: UniqueKey(),
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text('Add Quote'),
-                        content: Form(
-                          key: provider.formKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                controller: provider.addTitleQuotesController,
-                                decoration: InputDecoration(hintText: 'Title'),
-                              ),
-                              TextFormField(
-                                controller: provider.addContentQuotesController,
-                                decoration: InputDecoration(hintText: 'Content'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              await provider.addQuotes(context);
-                              Navigator.pop(context);
-                            },
-                            child: Text('Add'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorsApp.primary,
-                              foregroundColor: ColorsApp.background,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  addQoutesMethod(context, provider);
                 },
                 backgroundColor: ColorsApp.primary,
                 // shape: const CircleBorder(),
@@ -105,6 +69,97 @@ class Home extends StatelessWidget {
       ),
     );
   }
+
+  Future<dynamic> addQoutesMethod(BuildContext context, MainProvider provider) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('اضافة اقتباس'),
+          content: ChangeNotifierProvider.value(
+            value: provider,
+            child: Consumer<MainProvider>(
+              builder: (context, provider2, child) {
+                return Form(
+                  key: provider2.formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: provider.addTitleQuotesController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'العنوان مطلوب';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(hintText: 'العنوان', border: OutlineInputBorder()),
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'المحتوي مطلوب';
+                          }
+                          return null;
+                        },
+                        controller: provider.addContentQuotesController,
+                        decoration: InputDecoration(hintText: 'المحتوي', border: OutlineInputBorder()),
+                        maxLines: 5,
+                      ),
+                      SizedBox(height: 10),
+                      Wrap(
+                        children: provider2.category.map((toElement) {
+                          return GestureDetector(
+                            onTap: () {
+                              provider2.toggleSelectionCategory(toElement);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              margin: EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                color: provider2.selectedCategory == toElement
+                                    ? ColorsApp.primary
+                                    : ColorsApp.textSecondary.withOpacity(.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                toElement,
+                                style: TextStyle(
+                                  color: provider2.selectedCategory == toElement ? Colors.white : ColorsApp.textSecondary,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                if (provider.formKey.currentState!.validate()) {
+                  await provider.addQuotes(context);
+                  Navigator.pop(context);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorsApp.primary,
+                foregroundColor: ColorsApp.background,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text('اضافة'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class MainScreen extends StatelessWidget {
@@ -136,33 +191,65 @@ class MainScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
-                  return CategoryTab(title: categories[index], isSelected: index == 0, onTap: () {});
+                  return CategoryTab(
+                    title: categories[index],
+                    isSelected: index == provider.selectedCategoryHome,
+                    onTap: () {
+                      provider.toggleSelectionCategoryHome(index);
+                      provider.searchQuates(category: categories[index]);
+                    },
+                  );
                 },
               ),
             ),
             SizedBox(height: 16),
             Consumer<MainProvider>(
               builder: (context, provider, child) {
-                return Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: 16);
-                    },
-                    itemCount: provider.searchQuotesController.text.isEmpty
-                        ? provider.quotes.length
-                        : provider.quatesResult.length,
-                    itemBuilder: (context, index) {
-                      return CardQuotes(
-                        qutoes: provider.searchQuotesController.text.isEmpty
-                            ? provider.quotes[index]['content']
-                            : provider.quatesResult[index]['content'],
-                        auther: provider.searchQuotesController.text.isEmpty
-                            ? provider.quotes[index]['user']
-                            : provider.quatesResult[index]['user'],
-                      );
-                    },
-                  ),
-                );
+                if (provider.getQuotesLoading) {
+                  return Expanded(child: Center(child: CircularProgressIndicator()));
+                } else if (provider.errorMessage != null) {
+                  return Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(child: Text(provider.errorMessage!)),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            provider.getQuotes();
+                          },
+                          child: Text('اعادة المحاولة'),
+                        ),
+                        SizedBox(height: 16),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) {
+                        return SizedBox(height: 16);
+                      },
+                      itemCount: provider.searchQuotesController.text.isEmpty
+                          ? provider.selectedCategoryHome == 0
+                                ? provider.quotes.length
+                                : provider.quatesResult.length
+                          : provider.quatesResult.length,
+                      itemBuilder: (context, index) {
+                        return CardQuotes(
+                          edit: IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
+                          qutoes: provider.searchQuotesController.text.isEmpty
+                              ? provider.quotes[index]['content']
+                              : provider.quatesResult[index]['content'],
+                          auther: provider.searchQuotesController.text.isEmpty
+                              ? provider.quotes[index]['user']['name']
+                              : provider.quatesResult[index]['user']['name'],
+                        );
+                      },
+                    ),
+                  );
+                }
               },
             ),
           ],

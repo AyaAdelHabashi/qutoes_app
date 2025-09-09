@@ -12,24 +12,59 @@ import 'package:qutoes_app/feature/profile/ui/profile.dart';
 import 'package:http/http.dart' as http;
 
 class MainProvider extends ChangeNotifier {
+  List<String> category = ["أدب", "فلسفة", "تحفيز", "حكم"];
   int currentIndex = 0;
   bool getQuotesLoading = false;
   List quotes = [];
+  String selectedCategory = "أدب";
+  int selectedCategoryHome = 0;
+  String? errorMessage;
+  toggleSelectionCategoryHome(int? value) {
+    selectedCategoryHome = value ?? 0;
+    notifyListeners();
+  }
+
+  toggleSelectionCategory(String? value) {
+    selectedCategory = value ?? "أدب";
+    notifyListeners();
+  }
+
   void getQuotes() async {
+    errorMessage = null;
     getQuotesLoading = true;
     notifyListeners();
-    final quotes = await http.get(Uri.parse('https://article-api-z472.onrender.com/api/articles'));
-    this.quotes = jsonDecode(quotes.body);
-    getQuotesLoading = false;
-    notifyListeners();
+    try {
+      final quotes = await http.get(Uri.parse('https://article-api-z472.onrender.com/api/articles'));
+      this.quotes = jsonDecode(quotes.body);
+      getQuotesLoading = false;
+      notifyListeners();
+    } catch (e) {
+      getQuotesLoading = false;
+      notifyListeners();
+      errorMessage = e.toString();
+      print(e);
+    }
   }
 
   List quatesResult = [];
   TextEditingController searchQuotesController = TextEditingController();
-  searchQuates() async {
-    final result = quotes.where((element) => element['title'].toLowerCase().contains(searchQuotesController.text.toLowerCase()));
-    quatesResult = result.toList();
-    notifyListeners();
+  searchQuates({String? category}) async {
+    if (searchQuotesController.text != "") {
+      selectedCategoryHome = 0;
+      final result = quotes.where(
+        (element) => element['title'].toLowerCase().contains(searchQuotesController.text.toLowerCase()),
+      );
+      quatesResult = result.toList();
+      notifyListeners();
+    } else {
+      print(category);
+      final result = quotes.where(
+        (element) => element['category'].toString().toLowerCase().contains(category.toString().toLowerCase()),
+      );
+      print(result);
+      quatesResult = result.toList();
+      notifyListeners();
+    }
   }
 
   bool addQuotesLoading = false;
@@ -61,12 +96,12 @@ class MainProvider extends ChangeNotifier {
       // إرسال الطلب باستخدام JSON و Bearer token
       final response = await http.post(
         Uri.parse('https://article-api-z472.onrender.com/api/articles'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': '$token', // استخدام Bearer مع التوكين
-          'x-auth-token': '$token',
-        },
-        body: jsonEncode({'title': addTitleQuotesController.text, 'content': addContentQuotesController.text}),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': '$token'},
+        body: jsonEncode({
+          'title': addTitleQuotesController.text,
+          'content': addContentQuotesController.text,
+          'category': selectedCategory,
+        }),
       );
 
       // التعامل مع الرد
