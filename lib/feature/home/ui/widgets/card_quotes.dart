@@ -6,13 +6,14 @@ class CardQuotes extends StatelessWidget {
   final String qutoes;
   final String auther;
   final Widget? delete;
+  final String? category;
   final Widget? edit;
-  const CardQuotes({super.key, required this.qutoes, required this.auther, this.delete, this.edit});
+  const CardQuotes({super.key, required this.qutoes, required this.auther, this.delete, this.edit, this.category});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -36,6 +37,11 @@ class CardQuotes extends StatelessWidget {
               Text(qutoes, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.textPrimary)),
 
               Text(auther, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.textSecondary)),
+              Container(
+                child: Text(category ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.background)),
+                decoration: BoxDecoration(color: ColorsApp.primary, borderRadius: BorderRadius.circular(8)),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              ),
             ],
           ),
           Spacer(),

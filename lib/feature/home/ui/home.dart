@@ -6,64 +6,75 @@ import 'package:qutoes_app/core/theme/colors.dart';
 import 'package:qutoes_app/feature/home/controller/main_controller.dart';
 import 'package:qutoes_app/feature/home/ui/widgets/card_quotes.dart';
 import 'package:qutoes_app/feature/home/ui/widgets/category_tab.dart';
-import 'package:qutoes_app/feature/home/ui/widgets/main_nav.dart';
+import 'package:qutoes_app/feature/loves/controller/fav_controller.dart';
+import 'package:qutoes_app/feature/profile/controller/profile_controller.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ChangeNotifierProvider.value(
-        value: ServiceLocator.getIt<MainProvider>()..getQuotes(),
-        child: Scaffold(
-          backgroundColor: ColorsApp.background,
-
-          floatingActionButton: Consumer<MainProvider>(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: ServiceLocator.getIt<MainProvider>()..getQuotes()),
+        ChangeNotifierProvider.value(value: ServiceLocator.getIt<FavController>()..getInitialFavQuotes()),
+        ChangeNotifierProvider.value(value: ServiceLocator.getIt<ProfileController>()..getUser()),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: ColorsApp.primary,
+          foregroundColor: Colors.white,
+          title: Consumer<MainProvider>(
             builder: (context, provider, child) {
-              return FloatingActionButton(
-                mini: true,
-                shape: const CircleBorder(),
-                key: UniqueKey(),
-                onPressed: () {
-                  addQoutesMethod(context, provider);
-                },
-                backgroundColor: ColorsApp.primary,
-                // shape: const CircleBorder(),
-                elevation: 4,
-                child: SvgPicture.asset('assets/images/edit.svg', width: 52, height: 52),
-              );
+              return Text(provider.titles[provider.currentIndex]);
             },
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          bottomNavigationBar: Consumer<MainProvider>(
-            key: UniqueKey(),
-            builder: (context, provider, child) {
-              return BottomNavigationBar(
-                selectedLabelStyle: TextStyle(color: ColorsApp.primary),
-                unselectedLabelStyle: TextStyle(color: ColorsApp.textSecondary),
-                selectedItemColor: ColorsApp.primary,
-                unselectedItemColor: ColorsApp.textSecondary,
-                showSelectedLabels: true,
-                showUnselectedLabels: true,
-                items: provider.items(context),
-                currentIndex: provider.currentIndex,
-
-                onTap: (index) {
-                  provider.setCurrentIndex(index);
-                },
-              );
-            },
-          ),
-
-          body: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 48),
-
-            child: Consumer<MainProvider>(
-              builder: (context, provider, child) {
-                return provider.screens[provider.currentIndex];
+        ),
+        backgroundColor: ColorsApp.background,
+        floatingActionButton: Consumer<MainProvider>(
+          builder: (context, provider, child) {
+            return FloatingActionButton(
+              mini: false,
+              shape: const CircleBorder(),
+              key: UniqueKey(),
+              onPressed: () {
+                addQoutesMethod(context, provider);
               },
-            ),
+              backgroundColor: ColorsApp.primary,
+              // shape: const CircleBorder(),
+              elevation: 4,
+              child: SvgPicture.asset('assets/images/edit.svg', width: 52, height: 52),
+            );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        bottomNavigationBar: Consumer<MainProvider>(
+          key: UniqueKey(),
+          builder: (context, provider, child) {
+            return BottomNavigationBar(
+              selectedLabelStyle: TextStyle(color: ColorsApp.primary),
+              unselectedLabelStyle: TextStyle(color: ColorsApp.textSecondary),
+              selectedItemColor: ColorsApp.primary,
+              unselectedItemColor: ColorsApp.textSecondary,
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
+              items: provider.items(context),
+              currentIndex: provider.currentIndex,
+
+              onTap: (index) {
+                provider.setCurrentIndex(index);
+              },
+            );
+          },
+        ),
+
+        body: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+
+          child: Consumer<MainProvider>(
+            builder: (context, provider, child) {
+              return provider.screens[provider.currentIndex];
+            },
           ),
         ),
       ),
@@ -145,6 +156,7 @@ class Home extends StatelessWidget {
               onPressed: () async {
                 if (provider.formKey.currentState!.validate()) {
                   await provider.addQuotes(context);
+                  ServiceLocator.getIt<FavController>().getInitialFavQuotes();
                   Navigator.pop(context);
                 }
               },
@@ -176,33 +188,7 @@ class MainScreen extends StatelessWidget {
             Text("اهلا بك مجددا", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorsApp.textPrimary)),
             SizedBox(height: 8),
             Text("اقرا شارك والهم ", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorsApp.textSecondary)),
-            SizedBox(height: 24),
-            SearchBar(
-              controller: provider.searchQuotesController,
-              hintText: 'ابحث عن اقتباس',
-              onChanged: (value) {
-                provider.searchQuates();
-              },
-            ),
-            SizedBox(height: 24),
-            SizedBox(
-              height: 40,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return CategoryTab(
-                    title: categories[index],
-                    isSelected: index == provider.selectedCategoryHome,
-                    onTap: () {
-                      provider.toggleSelectionCategoryHome(index);
-                      provider.searchQuates(category: categories[index]);
-                    },
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 16),
+
             Consumer<MainProvider>(
               builder: (context, provider, child) {
                 if (provider.getQuotesLoading) {
@@ -227,26 +213,75 @@ class MainScreen extends StatelessWidget {
                   );
                 } else {
                   return Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 16);
-                      },
-                      itemCount: provider.searchQuotesController.text.isEmpty
-                          ? provider.selectedCategoryHome == 0
-                                ? provider.quotes.length
-                                : provider.quatesResult.length
-                          : provider.quatesResult.length,
-                      itemBuilder: (context, index) {
-                        return CardQuotes(
-                          edit: IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
-                          qutoes: provider.searchQuotesController.text.isEmpty
-                              ? provider.quotes[index]['content']
-                              : provider.quatesResult[index]['content'],
-                          auther: provider.searchQuotesController.text.isEmpty
-                              ? provider.quotes[index]['user']['name']
-                              : provider.quatesResult[index]['user']['name'],
-                        );
-                      },
+                    child: Column(
+                      children: [
+                        SizedBox(height: 24),
+                        SearchBar(
+                          controller: provider.searchQuotesController,
+                          hintText: 'ابحث عن اقتباس',
+                          onChanged: (value) {
+                            provider.searchQuates();
+                          },
+                        ),
+                        SizedBox(height: 24),
+                        SizedBox(
+                          height: 40,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: categories.length,
+                            itemBuilder: (context, index) {
+                              return CategoryTab(
+                                title: categories[index],
+                                isSelected: index == provider.selectedCategoryHome,
+                                onTap: () {
+                                  provider.toggleSelectionCategoryHome(index);
+                                  provider.searchQuates(category: categories[index]);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Expanded(
+                          child: provider.quotes.isEmpty
+                              ? Center(child: Text("لا يوجد اقتباسات"))
+                              : Consumer<FavController>(
+                                  builder: (context, fave, child) {
+                                    return ListView.separated(
+                                      separatorBuilder: (context, index) {
+                                        return SizedBox(height: 16);
+                                      },
+                                      itemCount: provider.searchQuotesController.text.isEmpty
+                                          ? provider.selectedCategoryHome == 0
+                                                ? provider.quotes.length
+                                                : provider.quatesResult.length
+                                          : provider.quatesResult.length,
+                                      itemBuilder: (context, index) {
+                                        return CardQuotes(
+                                          edit: IconButton(
+                                            onPressed: () {
+                                              fave.toggleFavorite(provider.quotes[index]['_id'], context);
+                                            },
+                                            icon: fave.isFavorite(provider.quotes[index]['_id'])
+                                                ? Icon(Icons.favorite, color: Colors.red)
+                                                : Icon(Icons.favorite_border),
+                                          ),
+                                          qutoes: provider.searchQuotesController.text.isEmpty
+                                              ? provider.quotes[index]['content']
+                                              : provider.quatesResult[index]['content'],
+                                          auther: provider.searchQuotesController.text.isEmpty
+                                              ? provider.quotes[index]['user']['name']
+                                              : provider.quatesResult[index]['user']['name'],
+                                          category: provider.searchQuotesController.text.isEmpty
+                                              ? provider.quotes[index]['category']
+                                              : provider.quatesResult[index]['category'],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
                     ),
                   );
                 }

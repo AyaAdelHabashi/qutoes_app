@@ -31,6 +31,9 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       final loggedInUser = await AuthService.login(email, password);
       await CacheHelper.saveData(key: "token", value: loggedInUser?.token);
+      await CacheHelper.saveData(key: "expireDate", value: DateTime.now().add(Duration(hours: 5)).toString());
+      final expireDate = await CacheHelper.getData(key: "expireDate");
+      print(expireDate);
       user = loggedInUser;
       isLoading = false;
       notifyListeners();

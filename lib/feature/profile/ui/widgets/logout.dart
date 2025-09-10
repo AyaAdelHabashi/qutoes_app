@@ -38,6 +38,7 @@ class LogoutDialog extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         CacheHelper.removeData(key: 'token');
+                        CacheHelper.removeData(key: 'expireDate');
                         Navigator.pushReplacementNamed(context, '/login');
                       },
                       style: ElevatedButton.styleFrom(

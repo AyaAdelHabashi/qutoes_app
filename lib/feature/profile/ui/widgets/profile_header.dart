@@ -6,42 +6,31 @@ class ProfileHeader extends StatelessWidget {
   final String email;
   final String imageUrl;
 
-  const ProfileHeader({
-    super.key,
-    required this.name,
-    required this.email,
-    required this.imageUrl,
-  });
+  const ProfileHeader({super.key, required this.name, required this.email, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: double.infinity,
+      width: double.infinity,
       child: Card(
         color: ColorsApp.background,
-        elevation:.5,
+        elevation: .5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(imageUrl),
-              ),
+              CircleAvatar(radius: 30, backgroundImage: NetworkImage(imageUrl)),
               const SizedBox(width: 16),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(name,
-                   style: TextStyle(
-                    fontWeight: FontWeight.bold, 
-                    fontSize: 16,color: 
-                  ColorsApp.textPrimary)),
+                  Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: ColorsApp.textPrimary),
+                  ),
                   const SizedBox(height: 12),
-                  Text(email, 
-                  style: TextStyle(fontSize: 14, 
-                    color: ColorsApp.textSecondary)),
+                  Text(email, style: TextStyle(fontSize: 14, color: ColorsApp.textSecondary)),
                 ],
               ),
             ],

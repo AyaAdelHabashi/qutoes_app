@@ -20,7 +20,7 @@ void main() async {
   ServiceLocator.init();
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('ar')],
+      supportedLocales: const [Locale('ar'), Locale('en')],
       path: 'assets/localization',
       fallbackLocale: const Locale('ar'),
       child: MultiProvider(

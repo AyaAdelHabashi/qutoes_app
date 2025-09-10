@@ -35,50 +35,78 @@ class MyQuatesProvider extends ChangeNotifier {
   }
 
   bool deleteLoading = false;
-  Future<void> deleteQuote(String id) async {
+  Future<void> deleteQuote({required String id, required BuildContext context}) async {
     deleteLoading = true;
     notifyListeners();
     try {
       final response = await http.delete(
-        Uri.parse('https://article-api-z472.onrender.com/api/articles/:$id'),
+        Uri.parse('https://article-api-z472.onrender.com/api/articles/$id'),
         headers: {'x-auth-token': await CacheHelper.getData(key: 'token')},
       );
       if (response.statusCode == 200) {
         getQuotes();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("تم حذف الاقتباس بنجاح"), backgroundColor: Colors.green));
       } else {
         print(response.statusCode);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل حذف الاقتباس"), backgroundColor: Colors.red));
       }
       deleteLoading = false;
       notifyListeners();
     } catch (e) {
       errorMessage = e.toString();
       deleteLoading = false;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل حذف الاقتباس"), backgroundColor: Colors.red));
       print(e);
-      notifyListeners();
-    } finally {
-      deleteLoading = false;
       notifyListeners();
     }
   }
 
   bool updateLoading = false;
-  Future<void> updateQuote(String id, String title, String content) async {
+  String? updateErrorMessage;
+  int? selectedUpdateId;
+  toggleSelectedUpdateId(int? value) {
+    selectedUpdateId = value;
+    notifyListeners();
+  }
+
+  List<String> updatepdateCategory = ["أدب", "فلسفة", "تحفيز", "حكم"];
+  Future<void> updateQuote({
+    required String id,
+    required String title,
+    required String content,
+    required BuildContext context,
+  }) async {
     isLoading = true;
     notifyListeners();
+    Navigator.pop(context);
     try {
-      await http.put(
+      final response = await http.put(
         Uri.parse('https://article-api-z472.onrender.com/api/articles/$id'),
-        body: jsonEncode({'title': title, 'content': content}),
-        headers: {'x-auth-token': await CacheHelper.getData(key: 'token')},
+        body: jsonEncode({'title': title, 'content': content, 'category': updatepdateCategory[selectedUpdateId!]}),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': await CacheHelper.getData(key: 'token'),
+        },
       );
+      if (response.statusCode == 200) {
+        getQuotes();
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("تم تحديث الاقتباس بنجاح"), backgroundColor: Colors.green));
+      } else {
+        print(response.body);
+        updateErrorMessage = response.body;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل تحديث الاقتباس"), backgroundColor: Colors.red));
+      }
       updateLoading = false;
       notifyListeners();
     } catch (e) {
-      errorMessage = e.toString();
+      updateErrorMessage = e.toString();
       updateLoading = false;
-      notifyListeners();
-    } finally {
-      updateLoading = false;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل تحديث الاقتباس"), backgroundColor: Colors.red));
       notifyListeners();
     }
   }

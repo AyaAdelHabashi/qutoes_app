@@ -16,9 +16,15 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () async {
       if (CacheHelper.getData(key: "token") != null) {
-        Navigator.pushReplacementNamed(context, '/home');
+        final expireDateToken = await CacheHelper.getData(key: "expireDate");
+        final expireDate = DateTime.parse(expireDateToken!);
+        if (expireDate.isAfter(DateTime.now())) {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
       } else {
         Navigator.pushReplacementNamed(context, '/login');
       }

@@ -19,6 +19,7 @@ class MainProvider extends ChangeNotifier {
   String selectedCategory = "أدب";
   int selectedCategoryHome = 0;
   String? errorMessage;
+  List<String> titles = ["الرئيسية", "اقتباساتي", "اعجاباتي", "الملف الشخصي"];
   toggleSelectionCategoryHome(int? value) {
     selectedCategoryHome = value ?? 0;
     notifyListeners();
