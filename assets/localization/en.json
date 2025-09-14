@@ -1,1 +1,20 @@
-{}
+{
+    "signInTitle": "Continue your inspiration. Sign in now",
+    "emailHint": "Enter your email",
+    "passwordHint": "Enter password",
+    "confirmPasswordHint": "Confirm password",
+    "signInButton": "Sign In",
+    "no_account": "Don't have an account? ",
+    "signup": "Sign Up",
+    "have_account": "Already have an account? ",
+    "login": "Login",
+    "signUpTitle": "Start your inspiring journey. Sign up now",
+    "Name": "Name",
+    "profile": "My Profile",
+    "loves": "Likes",
+    "my_quotes": "My Quotes",
+    "home": "Home",
+    "language": "Language",
+    "edit_profile": "Edit Profile",
+    "change_password": "Change password"
+}
