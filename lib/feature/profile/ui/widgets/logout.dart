@@ -27,7 +27,7 @@ class LogoutDialog extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                tr('logout_dialog_message'),
+                tr('logout_dialog_content'),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.textSecondary),
               ),
@@ -60,7 +60,7 @@ class LogoutDialog extends StatelessWidget {
                         side: const BorderSide(color: Colors.red),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      child: Text(tr('cancel'), style: TextStyle(fontSize: 16, color: Colors.red)),
+                      child: Text(tr('Cancel'), style: TextStyle(fontSize: 16, color: Colors.red)),
                     ),
                   ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -86,7 +87,7 @@ class Home extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('اضافة اقتباس'),
+          title: Text(tr("add quotes")),
           content: ChangeNotifierProvider.value(
             value: provider,
             child: Consumer<MainProvider>(
@@ -104,7 +105,7 @@ class Home extends StatelessWidget {
                           }
                           return null;
                         },
-                        decoration: InputDecoration(hintText: 'العنوان', border: OutlineInputBorder()),
+                        decoration: InputDecoration(hintText: tr("title"), border: OutlineInputBorder()),
                       ),
                       SizedBox(height: 10),
                       TextFormField(
@@ -115,7 +116,7 @@ class Home extends StatelessWidget {
                           return null;
                         },
                         controller: provider.addContentQuotesController,
-                        decoration: InputDecoration(hintText: 'المحتوي', border: OutlineInputBorder()),
+                        decoration: InputDecoration(hintText: tr("content"), border: OutlineInputBorder()),
                         maxLines: 5,
                       ),
                       SizedBox(height: 10),
@@ -165,7 +166,7 @@ class Home extends StatelessWidget {
                 foregroundColor: ColorsApp.background,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: Text('اضافة'),
+              child: Text(tr("add")),
             ),
           ],
         );
@@ -185,9 +186,9 @@ class MainScreen extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("اهلا بك مجددا", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorsApp.textPrimary)),
+            Text(tr("welcome"), style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorsApp.textPrimary)),
             SizedBox(height: 8),
-            Text("اقرا شارك والهم ", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorsApp.textSecondary)),
+            Text(tr("read"), style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: ColorsApp.textSecondary)),
 
             Consumer<MainProvider>(
               builder: (context, provider, child) {
@@ -218,7 +219,7 @@ class MainScreen extends StatelessWidget {
                         SizedBox(height: 24),
                         SearchBar(
                           controller: provider.searchQuotesController,
-                          hintText: 'ابحث عن اقتباس',
+                          hintText: tr('search'),
                           onChanged: (value) {
                             provider.searchQuates();
                           },

@@ -38,7 +38,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(tr('Choose the app language'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(tr('lang'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             _buildLanguageOption('Arabic'),
             _buildLanguageOption('English'),
@@ -55,7 +55,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Confirm', style: TextStyle(fontSize: 16, color: ColorsApp.background)),
+                child: const Text("Confirm", style: TextStyle(fontSize: 16, color: ColorsApp.background)),
               ),
             ),
           ],

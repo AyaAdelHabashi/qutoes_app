@@ -75,7 +75,7 @@ class _ProfileState extends State<Profile> {
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text(tr("الغاء")),
+                                            child: Text(tr("Cancel")),
                                           ),
                                           provider2.updateProfileLoading
                                               ? Center(child: CircularProgressIndicator())
@@ -85,7 +85,7 @@ class _ProfileState extends State<Profile> {
                                                       provider2.updateProfile(context: context);
                                                     }
                                                   },
-                                                  child: Text(tr("حفظ")),
+                                                  child: Text(tr("Confirm")),
                                                 ),
                                         ],
                                       );

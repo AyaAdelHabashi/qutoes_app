@@ -16,5 +16,19 @@
     "home": "Home",
     "language": "Language",
     "edit_profile": "Edit Profile",
-    "change_password": "Change password"
+    "change_password": "Change password",
+    "add quotes":"add Quotes",
+    "title":"Title",
+    "content":"content",
+    "add":"Add",
+    "welcome":"Welcome Back!",
+    "read":"Read, Share & Inspire",
+    "search":"Search for a quote",
+    "lang":"Choose the app language",
+    "Arabic":"Arabic",
+    "Confirm":"Confirm",
+    "Cancel":"Cancel",
+    "logout":"Logout",
+    "logout_dialog_title":"Are you sure you want to logout?",
+    "logout_dialog_content":"You will need to login again to access your account."
 }
