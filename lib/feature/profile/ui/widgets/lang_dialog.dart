@@ -87,7 +87,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
                   : null,
             ),
             const SizedBox(width: 16),
-            Text(language, style: const TextStyle(fontSize: 16)),
+            Text(tr(language), style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),

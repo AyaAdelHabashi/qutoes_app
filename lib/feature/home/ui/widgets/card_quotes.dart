@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qutoes_app/core/theme/colors.dart';
@@ -38,9 +39,12 @@ class CardQuotes extends StatelessWidget {
 
               Text(auther, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.textSecondary)),
               Container(
-                child: Text(category ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.background)),
                 decoration: BoxDecoration(color: ColorsApp.primary, borderRadius: BorderRadius.circular(8)),
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Text(
+                  tr(category ?? ''),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ColorsApp.background),
+                ),
               ),
             ],
           ),

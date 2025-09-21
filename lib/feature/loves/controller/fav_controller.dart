@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qutoes_app/core/shared_prefrance.dart';
@@ -53,10 +54,10 @@ class FavController extends ChangeNotifier {
     // 💡 الخطوة 1: تحديث الواجهة فورًا (Optimistic Update)
     if (isCurrentlyFavorite) {
       _favoriteQuoteIds.remove(quoteId);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم حذف الاقتباس من المفضلة")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.tr("تم حذف الاقتباس من المفضلة"))));
     } else {
       _favoriteQuoteIds.add(quoteId);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم إضافة الاقتباس إلى المفضلة")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.tr("تم إضافة الاقتباس إلى المفضلة"))));
     }
     notifyListeners(); // تحديث الواجهة فورًا
 

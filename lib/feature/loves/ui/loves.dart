@@ -20,7 +20,7 @@ class Loves extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(10),
                 width: double.infinity,
-                child: Text("أجمالي الاعجابات :${provider.allfavoriteQuotes.length}"),
+                child: Text("${tr("total_likes")} :${provider.allfavoriteQuotes.length}"),
               ),
             ),
             SizedBox(height: 12),
@@ -29,7 +29,7 @@ class Loves extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [Center(child: Text("لا يوجد اعجابات"))],
+                  children: [Center(child: Text(tr("no_likes")))],
                 ),
               )
             else

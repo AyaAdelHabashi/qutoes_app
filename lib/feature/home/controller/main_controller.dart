@@ -47,25 +47,47 @@ class MainProvider extends ChangeNotifier {
     }
   }
 
+  // -->> هذا هو الـ Getter الجديد والمهم <<--
+  // سيقوم بإرجاع القائمة المناسبة للعرض تلقائيًا
+  List get displayedQuotes {
+    // إذا كان حقل البحث يحتوي على نص، اعرض نتائج البحث
+    if (searchQuotesController.text.isNotEmpty) {
+      return quatesResult;
+    }
+    // إذا تم اختيار فئة (غير "الكل")، اعرض نتائج الفلترة
+    if (selectedCategoryHome != 0) {
+      return quatesResult;
+    }
+    // في الحالة الافتراضية، اعرض كل الاقتباسات
+    return quotes;
+  }
+
   List quatesResult = [];
   TextEditingController searchQuotesController = TextEditingController();
-  searchQuates({String? category}) async {
-    if (searchQuotesController.text != "") {
+  searchQuates({String? category}) {
+    // الحالة الأولى: البحث بالنص
+    if (searchQuotesController.text.isNotEmpty) {
+      // ألغِ تحديد الفئة عند البحث بالنص
       selectedCategoryHome = 0;
-      final result = quotes.where(
-        (element) => element['title'].toLowerCase().contains(searchQuotesController.text.toLowerCase()),
-      );
-      quatesResult = result.toList();
-      notifyListeners();
-    } else {
-      print(category);
-      final result = quotes.where(
-        (element) => element['category'].toString().toLowerCase().contains(category.toString().toLowerCase()),
-      );
-      print(result);
-      quatesResult = result.toList();
-      notifyListeners();
+      quatesResult = quotes.where((element) {
+        // يفضل البحث في المحتوى والمؤلف معاً
+        final contentMatch = element['content'].toLowerCase().contains(searchQuotesController.text.toLowerCase());
+        final authorMatch = element['user']['name'].toLowerCase().contains(searchQuotesController.text.toLowerCase());
+        return contentMatch || authorMatch;
+      }).toList();
     }
+    // الحالة الثانية: الفلترة بالفئة (عندما يكون البحث فارغاً)
+    else if (category != null && selectedCategoryHome != 0) {
+      quatesResult = quotes.where((element) {
+        return element['category'].toString().contains(category);
+      }).toList();
+    }
+    // الحالة الثالثة: عرض الكل (عندما يكون البحث فارغاً و selectedCategoryHome == 0)
+    else {
+      quatesResult = []; // أو quatesResult = quotes;
+    }
+
+    notifyListeners();
   }
 
   bool addQuotesLoading = false;

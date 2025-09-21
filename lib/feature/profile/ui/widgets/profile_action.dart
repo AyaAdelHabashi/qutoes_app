@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qutoes_app/core/theme/colors.dart';
+import 'package:qutoes_app/feature/profile/ui/widgets/change_password.dart';
 
 class ProfileActions extends StatelessWidget {
   const ProfileActions({super.key});
@@ -10,7 +11,7 @@ class ProfileActions extends StatelessWidget {
       children: [
         _buildActionItem("تعديل الملف الشخصي", Icons.person),
         _buildActionItem("اللغة", Icons.language),
-        _buildActionItem("تغيير كلمة المرور", Icons.lock),
+        buildChangePasswordItem("تغيير كلمة المرور", Icons.lock, context),
         _buildActionItem("تسجيل الخروج", Icons.logout),
       ],
     );
@@ -22,9 +23,9 @@ class ProfileActions extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(icon, color:ColorsApp.primary),
+        leading: Icon(icon, color: ColorsApp.primary),
         title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color:ColorsApp.textSecondary),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: ColorsApp.textSecondary),
         onTap: () {},
       ),
     );

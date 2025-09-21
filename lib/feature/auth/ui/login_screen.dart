@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                                 ScaffoldMessenger.of(
                                   context,
                                 ).showSnackBar(const SnackBar(content: Text("Login successful"), backgroundColor: Colors.green));
-                                Navigator.pushNamed(context, '/home');
+                                Navigator.pushNamedAndRemoveUntil(context, '/home', (val) => false);
                               }
                             },
                           ),

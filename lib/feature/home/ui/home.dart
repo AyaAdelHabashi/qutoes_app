@@ -27,7 +27,7 @@ class Home extends StatelessWidget {
           foregroundColor: Colors.white,
           title: Consumer<MainProvider>(
             builder: (context, provider, child) {
-              return Text(provider.titles[provider.currentIndex]);
+              return Text(tr(provider.titles[provider.currentIndex]));
             },
           ),
         ),
@@ -101,7 +101,7 @@ class Home extends StatelessWidget {
                         controller: provider.addTitleQuotesController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'العنوان مطلوب';
+                            return tr("title_required");
                           }
                           return null;
                         },
@@ -111,7 +111,7 @@ class Home extends StatelessWidget {
                       TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'المحتوي مطلوب';
+                            return tr("content_required");
                           }
                           return null;
                         },
@@ -128,7 +128,7 @@ class Home extends StatelessWidget {
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              margin: EdgeInsets.symmetric(horizontal: 4),
+                              margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
                               decoration: BoxDecoration(
                                 color: provider2.selectedCategory == toElement
                                     ? ColorsApp.primary
@@ -136,7 +136,7 @@ class Home extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                toElement,
+                                tr(toElement),
                                 style: TextStyle(
                                   color: provider2.selectedCategory == toElement ? Colors.white : ColorsApp.textSecondary,
                                 ),
@@ -206,7 +206,7 @@ class MainScreen extends StatelessWidget {
                           onPressed: () {
                             provider.getQuotes();
                           },
-                          child: Text('اعادة المحاولة'),
+                          child: Text(tr("try_again")),
                         ),
                         SizedBox(height: 16),
                       ],
@@ -232,7 +232,7 @@ class MainScreen extends StatelessWidget {
                             itemCount: categories.length,
                             itemBuilder: (context, index) {
                               return CategoryTab(
-                                title: categories[index],
+                                title: tr(categories[index]),
                                 isSelected: index == provider.selectedCategoryHome,
                                 onTap: () {
                                   provider.toggleSelectionCategoryHome(index);
@@ -245,37 +245,37 @@ class MainScreen extends StatelessWidget {
                         SizedBox(height: 16),
                         Expanded(
                           child: provider.quotes.isEmpty
-                              ? Center(child: Text("لا يوجد اقتباسات"))
+                              ? Center(child: Text(tr("no_Qoutes")))
                               : Consumer<FavController>(
                                   builder: (context, fave, child) {
+                                    // تم تغيير اسم المتغير fave إلى provider ليكون أوضح
+                                    // نستخدم الآن القائمة الموحدة
+                                    final currentList = provider.displayedQuotes;
+
                                     return ListView.separated(
-                                      separatorBuilder: (context, index) {
-                                        return SizedBox(height: 16);
-                                      },
-                                      itemCount: provider.searchQuotesController.text.isEmpty
-                                          ? provider.selectedCategoryHome == 0
-                                                ? provider.quotes.length
-                                                : provider.quatesResult.length
-                                          : provider.quatesResult.length,
+                                      separatorBuilder: (context, index) => SizedBox(height: 16),
+
+                                      // itemCount أصبح بسيطًا جدًا
+                                      itemCount: currentList.length,
+
                                       itemBuilder: (context, index) {
+                                        // نصل إلى العنصر الحالي من القائمة الموحدة
+                                        final quote = currentList[index];
+
                                         return CardQuotes(
                                           edit: IconButton(
                                             onPressed: () {
-                                              fave.toggleFavorite(provider.quotes[index]['_id'], context);
+                                              // استخدم quote['_id'] للوصول إلى المعرف
+                                              fave.toggleFavorite(quote['_id'], context);
                                             },
-                                            icon: fave.isFavorite(provider.quotes[index]['_id'])
+                                            icon: fave.isFavorite(quote['_id'])
                                                 ? Icon(Icons.favorite, color: Colors.red)
                                                 : Icon(Icons.favorite_border),
                                           ),
-                                          qutoes: provider.searchQuotesController.text.isEmpty
-                                              ? provider.quotes[index]['content']
-                                              : provider.quatesResult[index]['content'],
-                                          auther: provider.searchQuotesController.text.isEmpty
-                                              ? provider.quotes[index]['user']['name']
-                                              : provider.quatesResult[index]['user']['name'],
-                                          category: provider.searchQuotesController.text.isEmpty
-                                              ? provider.quotes[index]['category']
-                                              : provider.quatesResult[index]['category'],
+                                          // كل البيانات تأتي الآن من نفس المصدر الموحد 'quote'
+                                          qutoes: quote['content'],
+                                          auther: quote['user']['name'],
+                                          category: quote['category'],
                                         );
                                       },
                                     );

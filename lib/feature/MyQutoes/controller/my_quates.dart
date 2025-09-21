@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:qutoes_app/core/shared_prefrance.dart';
@@ -47,10 +48,12 @@ class MyQuatesProvider extends ChangeNotifier {
         getQuotes();
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("تم حذف الاقتباس بنجاح"), backgroundColor: Colors.green));
+        ).showSnackBar(SnackBar(content: Text(context.tr("تم حذف الاقتباس بنجاح")), backgroundColor: Colors.green));
       } else {
         print(response.statusCode);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل حذف الاقتباس"), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.tr("فشل حذف الاقتباس")), backgroundColor: Colors.red));
       }
       deleteLoading = false;
       notifyListeners();
@@ -95,18 +98,22 @@ class MyQuatesProvider extends ChangeNotifier {
 
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("تم تحديث الاقتباس بنجاح"), backgroundColor: Colors.green));
+        ).showSnackBar(SnackBar(content: Text(context.tr("تم تحديث الاقتباس بنجاح")), backgroundColor: Colors.green));
       } else {
         print(response.body);
         updateErrorMessage = response.body;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل تحديث الاقتباس"), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.tr("فشل تحديث الاقتباس")), backgroundColor: Colors.red));
       }
       updateLoading = false;
       notifyListeners();
     } catch (e) {
       updateErrorMessage = e.toString();
       updateLoading = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل تحديث الاقتباس"), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.tr("فشل تحديث الاقتباس")), backgroundColor: Colors.red));
       notifyListeners();
     }
   }
